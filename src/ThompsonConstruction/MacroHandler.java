@@ -49,7 +49,7 @@ public class MacroHandler {
 
     public String expandMacro(String macroName) throws Exception {
         if(!macroMap.containsKey(macroName)){
-            ErrorHandler.parseError(ErrorHandler.Error.E_NOMAC);
+            ErrorHandler.parseError(ErrorHandler.Error.E_NO_MACRO);
         }else {
             return "(" + macroMap.get(macroName) + ")";
         }

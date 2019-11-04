@@ -7,7 +7,7 @@ public class ThompsonConstruction {
     private Input input = new Input();
     private MacroHandler macroHandler = null;
 
-    private void runMacroExample() throws Exception {
+    private void runMacroExample() {
         System.out.println("Please enter macro definition");
 
         renewInputBuffer();
@@ -31,7 +31,6 @@ public class ThompsonConstruction {
         input.advance();
         input.pushback(1);
     }
-
 
     public static void main(String[] args) throws Exception {
         ThompsonConstruction construction = new ThompsonConstruction();

@@ -7,9 +7,9 @@ import java.util.List;
 
 public class RegularExpressionHandler {
     private Input input;
-    private MacroHandler macroHandler = null;
+    private MacroHandler macroHandler;
     private List<String> REArray = new ArrayList<>();
-    private boolean isQuoted = false;
+//    private boolean isQuoted = false;
 
 
     public RegularExpressionHandler(Input input, MacroHandler macroHandler) throws Exception {
@@ -48,6 +48,7 @@ public class RegularExpressionHandler {
 
         StringBuilder RE = new StringBuilder();
         char c = (char)input.advance();
+        boolean isQuoted = false;
         while (!Character.isSpaceChar(c) && c != '\n'){
             if(c == '"'){
                 isQuoted = !isQuoted;
@@ -70,7 +71,7 @@ public class RegularExpressionHandler {
         while (begin != -1){
             int end = macroContent.indexOf('}', begin);
             if(end == -1){
-                ErrorHandler.parseError(ErrorHandler.Error.E_BADMAC);
+                ErrorHandler.parseError(ErrorHandler.Error.E_BAD_MACRO);
                 return null;
             }
 
@@ -92,19 +93,19 @@ public class RegularExpressionHandler {
     private boolean checkInQuoted(String macroContent, int begin, int end) throws Exception {
         boolean isquoted = false;
         int quoteBegin = macroContent.indexOf('"');
-        int quoteEnd = -1;
+        int quoteEnd;
 
         while (quoteBegin != -1){
             quoteEnd = macroContent.indexOf('"', quoteBegin + 1);
             if(quoteEnd == -1){
-                ErrorHandler.parseError(ErrorHandler.Error.E_BADMAC);
+                ErrorHandler.parseError(ErrorHandler.Error.E_BAD_MACRO);
             }
             if(quoteBegin < begin && quoteEnd > end){
                 isquoted = true;
             }else if(quoteBegin < begin && quoteEnd < end){
-                ErrorHandler.parseError(ErrorHandler.Error.E_BADMAC);
+                ErrorHandler.parseError(ErrorHandler.Error.E_BAD_MACRO);
             }else if(quoteBegin > begin && quoteEnd < end){
-                ErrorHandler.parseError(ErrorHandler.Error.E_BADMAC);
+                ErrorHandler.parseError(ErrorHandler.Error.E_BAD_MACRO);
             }
             quoteBegin = macroContent.indexOf('"', quoteEnd + 1);
         }
@@ -122,7 +123,7 @@ public class RegularExpressionHandler {
         if(c == '}')
             return name.toString();
         else {
-            ErrorHandler.parseError(ErrorHandler.Error.E_BADMAC);
+            ErrorHandler.parseError(ErrorHandler.Error.E_BAD_MACRO);
             return null;
         }
     }
