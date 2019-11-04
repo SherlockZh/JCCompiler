@@ -5,14 +5,14 @@ import java.util.Arrays;
 
 
 public class Input {
-	public  static final int   EOF = 0; //输入流中没有可以读取的信息
+	public static final int EOF = 0; //输入流中没有可以读取的信息
 	private final int   MAXLOOK = 16; //look ahead 最多字符数
 	private final int   MAXLEX = 1024; //分词后字符串的最大长度
 	private final int   BUFSIZE =  (MAXLEX * 3 ) + (2 * MAXLOOK); //缓冲区大小
 	private int         END_BUF = BUFSIZE; //缓冲区的逻辑结束地址
 	private final int   DANGER = (END_BUF - MAXLOOK);
 	private final int   END = BUFSIZE;
-	private final byte[]  START_BUF = new byte[BUFSIZE]; //缓冲区
+	private final byte[]START_BUF = new byte[BUFSIZE]; //缓冲区
 	private int         Next = END; //指向当前要读入的字符位置
 	private int         startMark = END; //当前被词法分析器分析的字符串位置
 	private int         endMark = END; //当前被词法分析器分析的字符串结束位置
@@ -55,14 +55,14 @@ public class Input {
 		fileHandler = getFileHandler(fileName);
 		fileHandler.Open();
 		
-		Eof_read = false;
-		Next     = END;
-		preMark    = END;
-		startMark    = END;
-		endMark    = END;
-		END_BUF  = END;
+		Eof_read  = false;
+		Next      = END;
+		preMark   = END;
+		startMark = END;
+		endMark   = END;
+		END_BUF   = END;
 		LineNum   = 1;
-		Mline    = 1;
+		Mline     = 1;
 	}
 	
 	public String preText() {
