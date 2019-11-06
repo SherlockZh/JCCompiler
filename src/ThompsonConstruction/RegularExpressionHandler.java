@@ -127,6 +127,16 @@ public class RegularExpressionHandler {
             return null;
         }
     }
+
+    public int getRegularExpressionCount() {
+        return REArray.size();
+    }
+
+    public String getRegularExpression(int index) {
+        if(index < 0 || index >= REArray.size())
+            return null;
+        return REArray.get(index);
+    }
 }
 
 
