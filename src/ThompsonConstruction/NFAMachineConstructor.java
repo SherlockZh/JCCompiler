@@ -16,7 +16,63 @@ public class NFAMachineConstructor {
         }
     }
 
+    public void expr(NFAPair pairOut) throws Exception{
+        cat_expr(pairOut);
+
+        NFAPair localPair = new NFAPair();
+
+        while(lexer.MatchToken(Lexer.Token.OR)){
+            lexer.advance();
+            cat_expr(localPair);
+
+            NFA startNode = nfaManager.newNFA();
+            startNode.next2 = localPair.startNode;
+            startNode.next = pairOut.startNode;
+            pairOut.startNode = startNode;
+
+            NFA endNode = nfaManager.newNFA();
+            pairOut.endNode.next = endNode;
+            localPair.endNode.next = endNode;
+            pairOut.endNode = endNode;
+        }
+    }
+
+    public void cat_expr(NFAPair pairOut) throws Exception {
+        if(first_in_cat(lexer.getCurrentToken()))
+            factor(pairOut);
+        while (first_in_cat(lexer.getCurrentToken())){
+            NFAPair localPair = new NFAPair();
+            factor(localPair);
+            pairOut.endNode.next = localPair.startNode;
+            pairOut.endNode = localPair.endNode;
+        }
+    }
+
+    private boolean first_in_cat(Lexer.Token token) throws Exception {
+        switch (token){
+            case CLOSE_PAREN:
+            case AT_EOL:
+            case OR:
+            case EOS:
+                return false;
+            case CLOSURE:
+            case PLUS_CLOSE:
+            case OPTIONAL:
+                ErrorHandler.parseError(ErrorHandler.Error.E_CLOSE);
+                return false;
+            case CCL_END:
+                ErrorHandler.parseError(ErrorHandler.Error.E_BRACKET);
+                return false;
+            case AT_BOL:
+                ErrorHandler.parseError(ErrorHandler.Error.E_BOL);
+                return false;
+        }
+        return true;
+    }
+
     public void factor(NFAPair pairOut) throws Exception {
+        term(pairOut);
+
         boolean handled = constructStarClosure(pairOut);
         if(!handled)
             handled = constructPlusClosure(pairOut);
@@ -25,8 +81,6 @@ public class NFAMachineConstructor {
     }
 
     public boolean constructStarClosure(NFAPair pairOut) throws Exception {
-        term(pairOut);
-
         if(!lexer.MatchToken(Lexer.Token.CLOSURE))
             return false;
 
@@ -34,13 +88,15 @@ public class NFAMachineConstructor {
         NFA end = nfaManager.newNFA();
 
         start.next = pairOut.startNode;
-        pairOut.endNode.next = end;
+        pairOut.endNode.next = pairOut.startNode;
 
         start.next2 = end;
-        pairOut.endNode.next2 = start;
+        pairOut.endNode.next2 = end;
 
         pairOut.startNode = start;
         pairOut.endNode = end;
+
+        lexer.advance();
 
         return true;
     }
@@ -49,8 +105,6 @@ public class NFAMachineConstructor {
         /*
          * term+
          */
-        term(pairOut);
-
         if (!lexer.MatchToken(Lexer.Token.PLUS_CLOSE))
             return false;
 
@@ -58,19 +112,18 @@ public class NFAMachineConstructor {
         NFA end = nfaManager.newNFA();
 
         start.next = pairOut.startNode;
-        pairOut.endNode.next = end;
-
-        pairOut.endNode.next2 = start;
+        pairOut.endNode.next2 = end;
+        pairOut.endNode.next = pairOut.startNode;
 
         pairOut.startNode = start;
         pairOut.endNode = end;
+
+        lexer.advance();
 
         return true;
     }
 
     public boolean constructOptionsClosure(NFAPair pairOut) throws Exception {
-        term(pairOut);
-
         if(!lexer.MatchToken(Lexer.Token.OPTIONAL))
             return false;
 
@@ -85,10 +138,12 @@ public class NFAMachineConstructor {
         pairOut.startNode = start;
         pairOut.endNode = end;
 
+        lexer.advance();
+
         return true;
     }
 
-    private void term(NFAPair pairOut) throws Exception {
+    public void term(NFAPair pairOut) throws Exception {
         boolean handled = constructNfaForSingleCharacter(pairOut);
         if (!handled) 
             handled = constructNfaForDot(pairOut);
@@ -96,7 +151,20 @@ public class NFAMachineConstructor {
             handled = constructNFAForCharacterSet(pairOut);
     }
 
-    private boolean constructNfaForSingleCharacter(NFAPair pairOut) throws Exception {
+    public boolean constructExprInParen(NFAPair pairOut) throws Exception{
+        if(lexer.MatchToken(Lexer.Token.OPEN_PAREN)){
+            lexer.advance();
+            expr(pairOut);
+            if(lexer.MatchToken(Lexer.Token.CLOSE_PAREN))
+                lexer.advance();
+            else
+                ErrorHandler.parseError(ErrorHandler.Error.E_PAREN);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean constructNfaForSingleCharacter(NFAPair pairOut) throws Exception {
         if(!lexer.MatchToken(Lexer.Token.L)) return false;
 
         NFA start = pairOut.startNode = nfaManager.newNFA();
@@ -126,28 +194,43 @@ public class NFAMachineConstructor {
         return true;
     }
 
-    private boolean constructNFAForCharacterSetWithoutNegative(NFAPair pairOut) throws Exception {
+    public boolean constructNFAForCharacterSetWithoutNegative(NFAPair pairOut) throws Exception {
         if(!lexer.MatchToken(Lexer.Token.CCL_START)) return false;
 
         lexer.advance();
 
-        NFA start = pairOut.startNode = nfaManager.newNFA();
-        pairOut.endNode = pairOut.startNode.next = nfaManager.newNFA();
+        constructNFAForCharacterSetHelper(pairOut);
 
-        start.setEdge(NFA.CCL);
-
-        if(!lexer.MatchToken(Lexer.Token.CCL_END))
-            dodash(start.inputSet);
-
-        if(!lexer.MatchToken(Lexer.Token.CCL_END))
-            ErrorHandler.parseError(ErrorHandler.Error.E_BAD_EXPR);
+//        NFA start = pairOut.startNode = nfaManager.newNFA();
+//        pairOut.endNode = pairOut.startNode.next = nfaManager.newNFA();
+//        start.setEdge(NFA.CCL);
+//
+//        if(!lexer.MatchToken(Lexer.Token.CCL_END))
+//            doDash(start.inputSet);
+//
+//        if(!lexer.MatchToken(Lexer.Token.CCL_END))
+//            ErrorHandler.parseError(ErrorHandler.Error.E_BAD_EXPR);
 
         lexer.advance();
 
         return true;
     }
 
-    private boolean constructNFAForCharacterSet(NFAPair pairOut) throws Exception {
+    public NFA constructNFAForCharacterSetHelper(NFAPair pairOut) throws Exception {
+        NFA start = pairOut.startNode = nfaManager.newNFA();
+        pairOut.endNode = pairOut.startNode.next = nfaManager.newNFA();
+        start.setEdge(NFA.CCL);
+
+        if(!lexer.MatchToken(Lexer.Token.CCL_END))
+            doDash(start.inputSet);
+
+        if(!lexer.MatchToken(Lexer.Token.CCL_END))
+            ErrorHandler.parseError(ErrorHandler.Error.E_BAD_EXPR);
+
+        return start;
+    }
+
+    public boolean constructNFAForCharacterSet(NFAPair pairOut) throws Exception {
         if (!lexer.MatchToken(Lexer.Token.CCL_START)) {
             return false;
         }
@@ -157,19 +240,18 @@ public class NFAMachineConstructor {
         if (lexer.MatchToken(Lexer.Token.AT_BOL)) {
             negative = true;
         }
-
-        NFA start = null;
-        start = pairOut.startNode = nfaManager.newNFA();
-        pairOut.endNode = pairOut.startNode.next = nfaManager.newNFA();
-        start.setEdge(NFA.CCL);
-
-        if (!lexer.MatchToken(Lexer.Token.CCL_END)) {
-            dodash(start.inputSet);
-        }
-
-        if (!lexer.MatchToken(Lexer.Token.CCL_END)) {
-            ErrorHandler.parseError(ErrorHandler.Error.E_BAD_EXPR);
-        }
+        NFA start = constructNFAForCharacterSetHelper(pairOut);
+//        NFA start = pairOut.startNode = nfaManager.newNFA();
+//        pairOut.endNode = pairOut.startNode.next = nfaManager.newNFA();
+//        start.setEdge(NFA.CCL);
+//
+//        if (!lexer.MatchToken(Lexer.Token.CCL_END)) {
+//            doDash(start.inputSet);
+//        }
+//
+//        if (!lexer.MatchToken(Lexer.Token.CCL_END)) {
+//            ErrorHandler.parseError(ErrorHandler.Error.E_BAD_EXPR);
+//        }
 
         if (negative) {
             start.setComplement();
@@ -179,7 +261,7 @@ public class NFAMachineConstructor {
 
         return true;
     }
-    private void dodash(Set<Byte> set) {
+    public void doDash(Set<Byte> set) {
         int first = 0;
 
         while (!lexer.MatchToken(Lexer.Token.EOS) && !lexer.MatchToken(Lexer.Token.CCL_END)) {

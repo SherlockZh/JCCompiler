@@ -7,7 +7,7 @@ public class InputSystem {
 
 	private Input input = new Input();
 
-	public void runStdinExampe() {
+	public void runStdinExample() {
     	input.newFile(null); //控制台输入
     	
     	input.mark_start();
@@ -29,6 +29,8 @@ public class InputSystem {
 		 *         |<-------------------------BUFSIZE---------------------------------->|
     	 * 
     	 */
+
+    	input.lookahead(2);
     	
     	input.mark_start();
     	printWord();
@@ -68,6 +70,6 @@ public class InputSystem {
 	
     public static void main(String[] args) {
     	InputSystem input = new InputSystem();
-    	input.runStdinExampe();
+    	input.runStdinExample();
     }
 }

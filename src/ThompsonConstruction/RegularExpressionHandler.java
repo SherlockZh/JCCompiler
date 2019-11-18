@@ -35,6 +35,16 @@ public class RegularExpressionHandler {
         }
     }
 
+    public int getRegularExpressionCount() {
+        return REArray.size();
+    }
+
+    public String getRegularExpression(int index) {
+        if(index < 0 || index >= REArray.size())
+            return null;
+        return REArray.get(index);
+    }
+
     /*
      * 对正则表达式进行预处理，将表达式中的宏进行替换，例如
      * D*\.D 预处理后输出
@@ -128,15 +138,7 @@ public class RegularExpressionHandler {
         }
     }
 
-    public int getRegularExpressionCount() {
-        return REArray.size();
-    }
 
-    public String getRegularExpression(int index) {
-        if(index < 0 || index >= REArray.size())
-            return null;
-        return REArray.get(index);
-    }
 }
 
 

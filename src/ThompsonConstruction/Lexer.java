@@ -24,7 +24,7 @@ public class Lexer {
     private final int ASCII_COUNT = 128;
     private Token[] tokenMap = new Token[ASCII_COUNT];
     private Token currentToken = Token.EOS;
-    RegularExpressionHandler exprHandler = null;
+    private RegularExpressionHandler exprHandler = null;
     private int exprCount = 0;
     private String curExpr = "";
     private int charIndex = 0;
@@ -65,6 +65,10 @@ public class Lexer {
 
     public String getCurExpr() {
         return curExpr;
+    }
+
+    public Token getCurrentToken() {
+        return currentToken;
     }
 
     public Token advance(){

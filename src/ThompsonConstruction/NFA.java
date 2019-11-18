@@ -27,8 +27,8 @@ public class NFA {
     public boolean isVisited() {
         return visited;
     }
-    public void setVisited(boolean visited) {
-        this.visited = visited;
+    public void setVisited() {
+        visited = true;
     }
     public void setStateNum(int num) {
         stateNum = num;
