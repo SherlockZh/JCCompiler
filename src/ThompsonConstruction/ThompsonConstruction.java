@@ -9,8 +9,10 @@ public class ThompsonConstruction {
     private Lexer lexer = null;
 
     private NFAPrinter nfaPrinter = new NFAPrinter();
-
+    private NFAMachineConstructor nfaMachineConstructor = null;
     private NFAPair pair = new NFAPair();
+
+    private NFAInterpretor nfaInterpretor = null;
 
     private void runMacroExample() {
         System.out.println("Please enter macro definition");
@@ -24,7 +26,7 @@ public class ThompsonConstruction {
         System.out.println("Enter regular expression");
         renewInputBuffer();
 
-        RegularExpressionHandler regularExpr = new RegularExpressionHandler(input, macroHandler);
+        regularExpr = new RegularExpressionHandler(input, macroHandler);
         System.out.println("regular expression after expanded: ");
         for(int i = 0; i < regularExpr.getRECount(); i++){
             System.out.println(regularExpr.getRE(i));
@@ -128,13 +130,13 @@ public class ThompsonConstruction {
 
 
     private void runNfaInterpretorExample() {
-        NFAInterpretor nfaInterpretor = new NFAInterpretor(pair.startNode, input);
+        nfaInterpretor = new NFAInterpretor(pair.startNode, input);
         nfaInterpretor.interpretNFA();
     }
 
     private void runNfaMachineConstructorExample() throws Exception {
         lexer = new Lexer(regularExpr);
-        NFAMachineConstructor nfaMachineConstructor = new NFAMachineConstructor(lexer);
+        nfaMachineConstructor = new NFAMachineConstructor(lexer);
 
         //nfaMachineConstructor.constructNfaForSingleCharacter(pair);
         //nfaMachineConstructor.constructNfaForDot(pair);
@@ -161,7 +163,7 @@ public class ThompsonConstruction {
         construction.runMacroExample();
         construction.runMacroExpandExample();
         construction.runLexerExample();
-        
+
         construction.runNfaMachineConstructorExample();
 
         construction.runNfaInterpretorExample();

@@ -85,7 +85,7 @@ public class NFAInterpretor {
         next.add(start);
         e_closure(next);
 
-        Set<NFA> current = null;
+        Set<NFA> current;
         char c;
         StringBuilder inputStr = new StringBuilder();
         boolean lastAccepted = false;
