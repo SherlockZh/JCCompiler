@@ -12,7 +12,7 @@ public class ThompsonConstruction {
 
     private NFAPair pair = new NFAPair();
 
-    private NFAInterpretor nfaInterpretor = null;
+    private NFAInterpreter nfaInterpreter = null;
 
     private DFAConstructor dfaConstructor = null;
 
@@ -131,12 +131,12 @@ public class ThompsonConstruction {
     }
 
     private void runNfaInterpretorExample() {
-        nfaInterpretor = new NFAInterpretor(pair.startNode, input);
-        nfaInterpretor.interpretNFA();
+        nfaInterpreter = new NFAInterpreter(pair.startNode, input);
+        nfaInterpreter.interpretNFA();
     }
 
     public void runDfaConstructorExample() {
-        dfaConstructor = new DFAConstructor(pair, nfaInterpretor);
+        dfaConstructor = new DFAConstructor(pair, nfaInterpreter);
         dfaConstructor.convertNfa2Dfa();
         dfaConstructor.printDFA();
     }
@@ -184,10 +184,9 @@ public class ThompsonConstruction {
 D   [0-9]
 end
 
-{D}+
-end
-
 {D}*\.{D}|{D}\.{D}*
 end
 
+1.2
+end
  */

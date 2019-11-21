@@ -4,7 +4,7 @@ import java.util.*;
 
 public class DFAConstructor {
     private NFAPair nfaMachine;
-    private NFAInterpretor nfaInterpretor;
+    private NFAInterpreter nfaInterpreter;
     private List<DFA> dfaList = new ArrayList<>();
 
     private static final int MAX_DFA_STATE_COUNT = 254;
@@ -13,9 +13,9 @@ public class DFAConstructor {
 
     private int[][] dfaStateTransformTable = new int[MAX_DFA_STATE_COUNT][ASCII_COUNT + 1];
 
-    public DFAConstructor(NFAPair pair, NFAInterpretor nfaInterpretor){
-        this.nfaInterpretor = nfaInterpretor;
-        this.nfaInterpretor.debug = false;
+    public DFAConstructor(NFAPair pair, NFAInterpreter nfaInterpreter){
+        this.nfaInterpreter = nfaInterpreter;
+        this.nfaInterpreter.debug = false;
         this.nfaMachine = pair;
         initTransformTable();
     }
@@ -31,7 +31,7 @@ public class DFAConstructor {
     public int[][] convertNfa2Dfa() {
         Set<NFA> input = new HashSet<>();
         input.add(nfaMachine.startNode);
-        Set<NFA> nfaStartClosure = nfaInterpretor.e_closure(input);
+        Set<NFA> nfaStartClosure = nfaInterpreter.e_closure(input);
         DFA start = DFA.getDfaFromNfaSet(nfaStartClosure);
         dfaList.add(start);
 
@@ -51,12 +51,12 @@ public class DFAConstructor {
             //debug end
 
             for(char c = 0; c <= ASCII_COUNT; c++){
-                Set<NFA> movedSet = nfaInterpretor.move(currentDfa.nfaStates, c);
+                Set<NFA> movedSet = nfaInterpreter.move(currentDfa.nfaStates, c);
 
                 if(movedSet.isEmpty()){
                     nextState = STATE_FAILURE;
                 }else {
-                    Set<NFA> closure = nfaInterpretor.e_closure(movedSet);
+                    Set<NFA> closure = nfaInterpreter.e_closure(movedSet);
                     DFA dfa = isNfaStatesExistInDfa(closure);
 
                     if(dfa == null){

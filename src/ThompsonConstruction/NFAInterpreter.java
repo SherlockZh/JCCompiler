@@ -4,13 +4,13 @@ import InputSystem.Input;
 
 import java.util.*;
 
-public class NFAInterpretor {
+public class NFAInterpreter {
     private NFA start;
     private Input input;
 
     public boolean debug = true;
 
-    public NFAInterpretor(NFA start, Input input) {
+    public NFAInterpreter(NFA start, Input input) {
         this.start = start;
         this.input = input;
     }
