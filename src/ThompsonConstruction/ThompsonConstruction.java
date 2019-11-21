@@ -12,6 +12,10 @@ public class ThompsonConstruction {
 
     private NFAPair pair = new NFAPair();
 
+    private NFAInterpretor nfaInterpretor = null;
+
+    private DFAConstructor dfaConstructor = null;
+
     private void runMacroExample() {
         System.out.println("Please enter macro definition");
 
@@ -24,7 +28,7 @@ public class ThompsonConstruction {
         System.out.println("Enter regular expression");
         renewInputBuffer();
 
-        RegularExpressionHandler regularExpr = new RegularExpressionHandler(input, macroHandler);
+        regularExpr = new RegularExpressionHandler(input, macroHandler);
         System.out.println("regular expression after expanded: ");
         for(int i = 0; i < regularExpr.getRECount(); i++){
             System.out.println(regularExpr.getRE(i));
@@ -126,10 +130,15 @@ public class ThompsonConstruction {
         System.out.println(s);
     }
 
-
     private void runNfaInterpretorExample() {
-        NFAInterpretor nfaInterpretor = new NFAInterpretor(pair.startNode, input);
+        nfaInterpretor = new NFAInterpretor(pair.startNode, input);
         nfaInterpretor.interpretNFA();
+    }
+
+    public void runDfaConstructorExample() {
+        dfaConstructor = new DFAConstructor(pair, nfaInterpretor);
+        dfaConstructor.convertNfa2Dfa();
+        dfaConstructor.printDFA();
     }
 
     private void runNfaMachineConstructorExample() throws Exception {
@@ -165,6 +174,8 @@ public class ThompsonConstruction {
         construction.runNfaMachineConstructorExample();
 
         construction.runNfaInterpretorExample();
+
+        construction.runDfaConstructorExample();
     }
 
 
@@ -176,7 +187,7 @@ end
 {D}+
 end
 
-又发现新大陆了？
-为什么总感觉这样放在桌子上的声音非常大。。。
-现在可能有点理解为什么要搞个鼠标垫了。。。
+{D}*\.{D}|{D}\.{D}*
+end
+
  */

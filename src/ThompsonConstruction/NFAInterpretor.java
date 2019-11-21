@@ -8,13 +8,17 @@ public class NFAInterpretor {
     private NFA start;
     private Input input;
 
+    public boolean debug = true;
+
     public NFAInterpretor(NFA start, Input input) {
         this.start = start;
         this.input = input;
     }
 
-    private Set<NFA> e_closure(Set<NFA> input){
-        System.out.print("ε-Closure( " + strFromNFASet(input) + " ) = ");
+    public Set<NFA> e_closure(Set<NFA> input){
+
+        if(debug)
+            System.out.print("ε-Closure( " + strFromNFASet(input) + " ) = ");
 
         if(input == null || input.isEmpty()) return null;
 
@@ -39,7 +43,8 @@ public class NFAInterpretor {
                 }
             }
         }
-        System.out.println("{ " + strFromNFASet(input) + " }");
+        if(debug)
+            System.out.println("{ " + strFromNFASet(input) + " }");
 
         return input;
     }
@@ -58,7 +63,7 @@ public class NFAInterpretor {
     }
 
 
-    private Set<NFA> move(Set<NFA> input, char c){
+    public Set<NFA> move(Set<NFA> input, char c){
         Set<NFA> outSet = new HashSet<>();
 
         for (NFA nfa : input) {
@@ -69,9 +74,10 @@ public class NFAInterpretor {
                 outSet.add(nfa.next);
             }
         }
-        System.out.print("move({ " + strFromNFASet(input) + " }");
-        System.out.println("{ " + strFromNFASet(outSet) + " }");
-
+        if(debug){
+            System.out.print("move({ " + strFromNFASet(input) + " }");
+            System.out.println("{ " + strFromNFASet(outSet) + " }");
+        }
         return outSet;
     }
 
