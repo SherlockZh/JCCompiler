@@ -5,6 +5,7 @@ import java.util.*;
 public class DFAConstructor {
     private NFAPair nfaMachine;
     private NFAInterpreter nfaInterpreter;
+
     private List<DFA> dfaList = new ArrayList<>();
 
     private static final int MAX_DFA_STATE_COUNT = 254;
@@ -126,6 +127,14 @@ public class DFAConstructor {
 
     private boolean isOnDot(int from, int to) {
         return dfaStateTransformTable[from]['.'] == to;
+    }
+
+    public List<DFA> getDfaList() {
+        return dfaList;
+    }
+
+    public int[][] getDfaTransTable(){
+        return dfaStateTransformTable;
     }
 }
 

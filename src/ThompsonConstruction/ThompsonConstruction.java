@@ -10,11 +10,13 @@ public class ThompsonConstruction {
 
     private NFAPrinter nfaPrinter = new NFAPrinter();
 
-    private NFAPair pair = new NFAPair();
+    NFAPair pair = new NFAPair();
 
-    private NFAInterpreter nfaInterpreter = null;
+    NFAInterpreter nfaInterpreter = null;
 
-    private DFAConstructor dfaConstructor = null;
+    DFAConstructor dfaConstructor = null;
+
+    MinimizeDFA miniDfa;
 
     private void runMacroExample() {
         System.out.println("Please enter macro definition");
@@ -165,6 +167,11 @@ public class ThompsonConstruction {
         input.pushback(1);
     }
 
+    private void runMinimizeDFAExample() {
+        miniDfa = new MinimizeDFA(dfaConstructor);
+        miniDfa.minimize();
+    }
+
     public static void main(String[] args) throws Exception {
         ThompsonConstruction construction = new ThompsonConstruction();
         construction.runMacroExample();
@@ -176,6 +183,8 @@ public class ThompsonConstruction {
         construction.runNfaInterpretorExample();
 
         construction.runDfaConstructorExample();
+
+        construction.runMinimizeDFAExample();
     }
 
 
