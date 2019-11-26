@@ -36,7 +36,7 @@ public class Lexer {
     
     	while (true) {
     		
-    		while (current == "") {
+    		while (current.equals("")) {
     		    Scanner s = new Scanner(System.in);
     		    while (true) {
     		    	String line = s.nextLine();
@@ -115,7 +115,7 @@ public class Lexer {
     
     public void runLexer() {
     	while (!match(EOI) ) {
-    		if (match(WHITE_SPACE) != true) {
+    		if (!match(WHITE_SPACE)) {
     		    System.out.println("Token: " + token() + " ,Symbol: " + yytext );
     		}
     		advance();

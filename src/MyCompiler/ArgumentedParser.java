@@ -5,7 +5,7 @@ import java.util.Stack;
 
 
 public class ArgumentedParser {
-    private Stack<String> temporaryStack = new Stack<String>();
+    private Stack<String> temporaryStack = new Stack<>();
 	    
     private String[] names = null;
 	private int nameIdx = 0;
