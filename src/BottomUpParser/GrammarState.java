@@ -12,9 +12,9 @@ public class GrammarState {
     private boolean transitionDone = false;
     private int stateNum = -1;
     private GrammarStateManager stateManager = GrammarStateManager.getGrammarManager();
-    private ArrayList<Production> productions;
+    private List<Production> productions;
     private HashMap<Integer, GrammarState> transition = new HashMap<>();
-    private ArrayList<Production> closureSet = new ArrayList<>();
+    private List<Production> closureSet = new ArrayList<>();
     private ProductionManager productionManager = ProductionManager.getProductionManager();
     private HashMap<Integer, ArrayList<Production>> partitionMap = new HashMap<>();
 
@@ -26,7 +26,7 @@ public class GrammarState {
         return transitionDone;
     }
 
-    public GrammarState(ArrayList<Production> productions) {
+    public GrammarState(List<Production> productions) {
         this.stateNum = stateNumCount;
         this.productions = productions;
         this.closureSet.addAll(this.productions);
